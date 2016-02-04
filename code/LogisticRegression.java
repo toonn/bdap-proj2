@@ -74,6 +74,7 @@ public class LogisticRegression{
     */
   public void updateParameters(int[][] examples){
     for(int[] example : examples) {
+      examplesProcessed += 1;
       double factor = learningRate * (h(example) - example[classPosition]);
 
       theta[0] += theta[0] - factor;
