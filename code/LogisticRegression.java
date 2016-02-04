@@ -9,12 +9,14 @@
   */
 import java.io.*;
 import java.util.*;
+
 public class LogisticRegression{
 
   private int numFeatures;
   private int classPosition;
   private int examplesProcessed;
   private double learningRate;
+  private double[] theta;
 
 
   /**
@@ -26,7 +28,8 @@ public class LogisticRegression{
     @param classPosition position of the label in the feature vector.
     @param learningRate is the learning rate
     */
-  public LogisticRegression(int numFeatures, int classPosition, double learningRate){
+  public LogisticRegression(int numFeatures, int classPosition,
+                            double learningRate){
     this.numFeatures = numFeatures;
     this.classPosition = classPosition;
     this.learningRate = learningRate;
@@ -36,6 +39,23 @@ public class LogisticRegression{
        FILL IN HERE
        You will need other data structures, initialize them here
        */
+    this.theta = new double[numFeatures+1];
+  }
+
+  private double h(int[] x) {
+    // Inner product of theta and x
+    double theta_x = theta[0];
+    int offset = 1;
+    for (int i = 0; i < x.length; i++) {
+      if (i == classPosition) {
+        offset = 0;
+        continue;
+      } else {
+        theta_x += x[i] * theta[i+offset];
+      }
+    }
+
+    return 1 / (1 + Math.exp(-theta_x));
   }
 
   /**
@@ -73,6 +93,7 @@ public class LogisticRegression{
        FILL IN HERE
        Compute the probability that example belongs to class "1"
        */ 
+    return 0.0d;
   }
 
   /**
