@@ -16,7 +16,8 @@ public class VfdtNode{
   private int splitFeatureId; /* splitting feature */
 
   protected int[][][] nijk; /* instance counts (see paper) */
-  /* FILL IN HERE */
+
+  private boolean split;
 
   /**
     Create and initialize a leaf node. 
@@ -25,8 +26,8 @@ public class VfdtNode{
     left = null;
     right = null; 
 
-    /* FILL IN HERE */
-
+    nijk = new int[numFeatures][2][2];
+    split = false;
   }
 
   /** 
@@ -37,9 +38,10 @@ public class VfdtNode{
     @param right is the right child (testFeature = 1).
     */
   public void addChildren(int testFeature, VfdtNode left, VfdtNode right){
-
-    /* FILL IN HERE */
-
+    split = true;
+    splitFeatureId = testFeature;
+    this.left = left;
+    this.right = right;
   }
 
   /** 
@@ -48,10 +50,12 @@ public class VfdtNode{
     @param example is the test example to sort. 
     */
   public VfdtNode sortExample(int[] example){
-
-    VfdtNode leaf = null; // change this
-
-    /* FILL IN HERE */
+    VfdtNode leaf = this;
+    if (split) {
+      leaf = (0 == example[splitFeatureId])
+             ? left.sortExample(example)
+             : right.sortExample(example);
+    }
 
     return leaf;
   }
@@ -68,6 +72,10 @@ public class VfdtNode{
     return informationGain(featureId, nijk);
   }
 
+  private static double entropy(double P, double N) {
+    return -P * Math.log(P)/Math.log(2) - N * Math.log(N)/Math.log(2);
+  }
+
   /**
     Compute the information gain of a feature for this leaf node. 
 
@@ -77,9 +85,27 @@ public class VfdtNode{
     @param nijk are the instance counts.
     */ 
   public static double informationGain(int featureId, int[][][] nijk){
-    double ig = 0; 
+    int count = 0;
+    for (int j = 0; j < 2; j++) {
+      for (int k = 0; k < 2; k++) {
+        count += nijk[featureId][j][k];
+      }
+    }
+    double P = (nijk[featureId][0][1] + nijk[featureId][1][1]) / count;
+    double N = (nijk[featureId][0][0] + nijk[featureId][1][0]) / count;
 
-    /* FILL IN HERE */
+    double ig = entropy(P,N); 
+
+    for (int j = 0; j < 2; j++) {
+      int count_j = 0;
+      for (int k = 0; k < 2; k++) {
+        count_j += nijk[featureId][j][k];
+      }
+      double P_j = nijk[featureId][j][1] / count_j;
+      double N_j = nijk[featureId][j][0] / count_j;
+
+      ig -= (count_j/count) * entropy(P_j, N_j);
+    }
 
     return ig; 
   }
