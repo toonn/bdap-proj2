@@ -40,6 +40,7 @@ public class LogisticRegression{
        You will need other data structures, initialize them here
        */
     this.theta = new double[numFeatures+1];
+    Arrays.fill(this.theta, 0);
   }
 
   private double h(int[] x) {
@@ -48,6 +49,9 @@ public class LogisticRegression{
     int offset = 1;
     for (int i = 0; i < x.length; i++) {
       if (i == classPosition) {
+        // offset has to change because the class has to be skipped in the
+        // feature vector but the parameter vector has no corresponding
+        // element
         offset = 0;
         continue;
       } else {
@@ -69,12 +73,23 @@ public class LogisticRegression{
     @param examples is a set of training examples
     */
   public void updateParameters(int[][] examples){
+    for(int[] example : examples) {
+      double factor = learningRate * (h(example) - example[classPosition]);
 
-    /*
-       FILL IN HERE
-       Update the parameters given the new data
-       to improve J(theta)
-       */
+      theta[0] += theta[0] - factor;
+      int offset = 1;
+      for (int i = 0; i < example.length; i++) {
+        if (i == classPosition) {
+          // offset has to change because the class has to be skipped in the
+          // feature vector but the parameter vector has no corresponding
+          // element
+          offset = 0;
+          continue;
+        } else {
+          theta[i+offset] += theta[i+offset] - factor * example[i];
+        }
+      }
+    }
   }
 
 
