@@ -103,12 +103,7 @@ public class LogisticRegression{
     @return the probability that example belongs to class "1"
     */
   public double makePrediction(int[] example){
-
-    /*
-       FILL IN HERE
-       Compute the probability that example belongs to class "1"
-       */ 
-    return 0.0d;
+    return h(example);
   }
 
   /**
