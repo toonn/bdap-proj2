@@ -176,7 +176,7 @@ public class LogisticRegression{
   public void writeAccuracyToFile(String file, int[][] data, double thres){
     double accuracy = computeAccuracy(data, thres); 
     try{
-      RandomAccessFile out = new RandomAccessFile(file + ".nb.acc", "rw");  
+      RandomAccessFile out = new RandomAccessFile(file + ".lr.acc", "rw");  
       long fileLength = out.length();
       out.seek(fileLength);
       out.writeBytes(examplesProcessed + "\t" + accuracy + "\n");
