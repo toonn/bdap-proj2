@@ -77,7 +77,7 @@ public class LogisticRegression{
       examplesProcessed += 1;
       double factor = learningRate * (h(example) - example[classPosition]);
 
-      theta[0] += theta[0] - factor;
+      theta[0] -= factor;
       int offset = 1;
       for (int i = 0; i < example.length; i++) {
         if (i == classPosition) {
@@ -87,7 +87,7 @@ public class LogisticRegression{
           offset = 0;
           continue;
         } else {
-          theta[i+offset] += theta[i+offset] - factor * example[i];
+          theta[i+offset] -= factor * example[i];
         }
       }
     }
