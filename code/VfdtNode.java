@@ -191,7 +191,7 @@ public class VfdtNode{
   }
 
   private static double entropy(double P, double N) {
-    return -P * Math.log(P)/Math.log(2) - N * Math.log(N)/Math.log(2);
+    return (-P * Math.log(P) - N * Math.log(N))/Math.log(2);
   }
 
   /**
