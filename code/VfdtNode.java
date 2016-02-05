@@ -18,20 +18,74 @@ public class VfdtNode{
   protected int[][][] nijk; /* instance counts (see paper) */
 
   private boolean split;
+  private int numFeatures;
+  private int classPosition;
+  private List<Integer> X;
 
   /**
     Create and initialize a leaf node. 
+    
+    This should only be used for the root node to split a node on a certain
+    feature see split.
     */
   public VfdtNode(int numFeatures){
+    // assume classPosition is the last element
+    classPosition = numFeatures;
+    X = new ArrayList<Integer>();
+    for (int i = 0; i < numFeatures; i++) {
+      if (i != classPosition) {
+        X.add(i);
+      }
+    }
+
+    this.init(numFeatures, classPosition, X);
+  }
+
+  /**
+    Create a root node with a known classPosition
+    */
+  public VfdtNode(int numFeatures, int classPosition) {
+    X = new ArrayList<Integer>();
+    for (int i = 0; i < numFeatures; i++) {
+      if (i != classPosition) {
+        X.add(i);
+      }
+    }
+
+    this.init(numFeatures, classPosition, X);
+  }
+
+  private VfdtNode(int numFeatures, int classPosition, List<Integer> X) {
+    this.init(numFeatures, classPosition, X);
+  }
+  
+  private void init(int numFeatures, int classPosition, List<Integer> X) {
     left = null;
     right = null; 
 
+    this.numFeatures = numFeatures;
     nijk = new int[numFeatures][2][2];
     split = false;
+    this.classPosition = classPosition;
+    this.X = X;
+  }
+
+  public void split(int testFeature) {
+    splitFeatureId = testFeature;
+    // remove element; not at index
+    X.remove(Integer.valueOf(splitFeatureId));
+    
+    left = new VfdtNode(numFeatures, classPosition,
+                        new ArrayList<Integer>(X));
+    right = new VfdtNode(numFeatures, classPosition,
+                         new ArrayList<Integer>(X));
   }
 
   /** 
     Turn a leaf node into a internal node.
+
+    This method does not do all the bookkeeping required and violates
+    encapsulation.
 
     @param testFeature is the feature to test on this node. 
     @param left is the left child (testFeature = 0). 
@@ -58,6 +112,16 @@ public class VfdtNode{
     }
 
     return leaf;
+  }
+
+  public void incrementNijk(int[] example) {
+    for (int i : X) {
+      // i only for features to be checked, j is index of value xij
+      // -> here 0 and 1 so values are there own index and are found at
+      // example[i], k is the index of the class yk and is found at
+      // classPosition
+      nijk[i][example[i]][example[classPosition]] += 1;
+    }
   }
 
   /**
