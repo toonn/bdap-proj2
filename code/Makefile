@@ -32,7 +32,7 @@ LogisticRegression.class: LogisticRegression.java Data.class
 	javac $<
 
 
-VfdtNode.class: Vfdt.java
+VfdtNode.class: VfdtNode.java
 	javac $<
 
 Vfdt.class: Vfdt.java VfdtNode.class Data.class
