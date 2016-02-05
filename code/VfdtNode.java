@@ -21,8 +21,8 @@ public class VfdtNode{
   private int numFeatures;
   private int classPosition;
   private List<Integer> X;
-  private int p;
-  private int n;
+  private double p;
+  private double n;
   private int accSinceGComputation;
 
   /**
@@ -77,6 +77,7 @@ public class VfdtNode{
   }
 
   private void split(int testFeature) {
+    split = true;
     splitFeatureId = testFeature;
     // remove element; not at index
     X.remove(Integer.valueOf(splitFeatureId));
@@ -88,7 +89,7 @@ public class VfdtNode{
   }
 
   private double epsilon(double delta) {
-    return Math.sqrt(Math.pow(Math.log(1),2) * Math.log(1/delta)/(2*(p+n)));
+    return Math.sqrt(Math.pow(Math.log(2),2) * Math.log(1/delta)/(2*(p+n)));
   }
 
   public void evaluateSplit(double delta, double tau, int nmin) {
@@ -191,7 +192,8 @@ public class VfdtNode{
   }
 
   private static double entropy(double P, double N) {
-    return (-P * Math.log(P) - N * Math.log(N))/Math.log(2);
+    return (-P * ((P == 0) ? 0 : Math.log(P))
+            - N * ((N == 0) ? 0 : Math.log(N)))/Math.log(2);
   }
 
   /**
@@ -203,7 +205,7 @@ public class VfdtNode{
     @param nijk are the instance counts.
     */ 
   public static double informationGain(int featureId, int[][][] nijk){
-    int count = 0;
+    double count = 0;
     for (int j = 0; j < 2; j++) {
       for (int k = 0; k < 2; k++) {
         count += nijk[featureId][j][k];
@@ -215,7 +217,7 @@ public class VfdtNode{
     double ig = entropy(P,N); 
 
     for (int j = 0; j < 2; j++) {
-      int count_j = 0;
+      double count_j = 0;
       for (int k = 0; k < 2; k++) {
         count_j += nijk[featureId][j][k];
       }
