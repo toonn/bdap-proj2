@@ -221,10 +221,12 @@ public class VfdtNode{
       for (int k = 0; k < 2; k++) {
         count_j += nijk[featureId][j][k];
       }
-      double P_j = nijk[featureId][j][1] / count_j;
-      double N_j = nijk[featureId][j][0] / count_j;
+      if (count_j > 0) {
+        double P_j = nijk[featureId][j][1] / count_j;
+        double N_j = nijk[featureId][j][0] / count_j;
 
-      ig -= (count_j/count) * entropy(P_j, N_j);
+        ig -= (count_j/count) * entropy(P_j, N_j);
+      }
     }
 
     return ig; 
