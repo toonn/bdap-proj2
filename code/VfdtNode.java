@@ -21,9 +21,8 @@ public class VfdtNode{
   private int numFeatures;
   private int classPosition;
   private List<Integer> X;
-  // When majorityClass >= 0 the majority class is positive else negative
-  private int majorityClass;
-  private int accumulatedExamples;
+  private int p;
+  private int n;
   private int accSinceGComputation;
 
   /**
@@ -72,8 +71,8 @@ public class VfdtNode{
     split = false;
     this.classPosition = classPosition;
     this.X = X;
-    majorityClass = 0;
-    accumulatedExamples = 0;
+    p = 0;
+    n = 0;
     accSinceGComputation = 0;
   }
 
@@ -89,7 +88,7 @@ public class VfdtNode{
   }
 
   private double epsilon(double delta) {
-    return Math.sqrt(Math.log(1/delta)/(2*accumulatedExamples));
+    return Math.sqrt(Math.log(1/delta)/(2*(p+n)));
   }
 
   public void evaluateSplit(double delta, double tau, int nmin) {
@@ -155,12 +154,11 @@ public class VfdtNode{
 
   public void incrementNijk(int[] example) {
     int k = example[classPosition];
-    accumulatedExamples += 1;
     accSinceGComputation += 1;
     if (k == 0) {
-      majorityClass -= 1;
+      n += 1;
     } else {
-      majorityClass += 1;
+      p += 1;
     }
     for (int i : X) {
       // i only for features to be checked, j is index of value xij
@@ -173,11 +171,11 @@ public class VfdtNode{
   }
 
   public boolean allTheSame() {
-    return (Math.abs(majorityClass) == accumulatedExamples);
+    return (p == 0 || n == 0);
   }
 
   public double predict() {
-    return (majorityClass + accumulatedExamples) / (2*accumulatedExamples);
+    return p / (p+n);
   }
 
   /**
