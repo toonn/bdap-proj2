@@ -176,7 +176,7 @@ public class VfdtNode{
     return (Math.abs(majorityClass) == accumulatedExamples);
   }
 
-  public int predict() {
+  public double predict() {
     return (majorityClass + accumulatedExamples) / (2*accumulatedExamples);
   }
 
