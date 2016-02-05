@@ -21,6 +21,10 @@ public class VfdtNode{
   private int numFeatures;
   private int classPosition;
   private List<Integer> X;
+  // When majorityClass >= 0 the majority class is positive else negative
+  private int majorityClass;
+  private int accumulatedExamples;
+  private int accSinceGComputation;
 
   /**
     Create and initialize a leaf node. 
@@ -68,9 +72,12 @@ public class VfdtNode{
     split = false;
     this.classPosition = classPosition;
     this.X = X;
+    majorityClass = 0;
+    accumulatedExamples = 0;
+    accSinceGComputation = 0;
   }
 
-  public void split(int testFeature) {
+  private void split(int testFeature) {
     splitFeatureId = testFeature;
     // remove element; not at index
     X.remove(Integer.valueOf(splitFeatureId));
@@ -79,6 +86,38 @@ public class VfdtNode{
                         new ArrayList<Integer>(X));
     right = new VfdtNode(numFeatures, classPosition,
                          new ArrayList<Integer>(X));
+  }
+
+  private double epsilon(double delta) {
+    return Math.sqrt(Math.log(1/delta)/(2*accumulatedExamples));
+  }
+
+  public void evaluateSplit(double delta, double tau, int nmin) {
+    if (accSinceGComputation >= nmin) {
+      accSinceGComputation = 0;
+      int a_i = 0;
+      double a = Double.NEGATIVE_INFINITY;
+      int b_i = 0;
+      double b = Double.NEGATIVE_INFINITY;
+      for (int i : X) {
+        double G = splitEval(i);
+        if (G > a) {
+          b_i = a_i;
+          b = a;
+          a_i = i;
+          a = G;
+        } else if (G > b) {
+          b_i = i;
+          b = G;
+        }
+      }
+      if (a - b > epsilon(delta)) {
+        split(a_i);
+      } else if (a - b < tau) {
+        // if DeltaG < tau there's a tie, break it
+        split(a_i);
+      }
+    }
   }
 
   /** 
@@ -115,13 +154,30 @@ public class VfdtNode{
   }
 
   public void incrementNijk(int[] example) {
+    int k = example[classPosition];
+    accumulatedExamples += 1;
+    accSinceGComputation += 1;
+    if (k == 0) {
+      majorityClass -= 1;
+    } else {
+      majorityClass += 1;
+    }
     for (int i : X) {
       // i only for features to be checked, j is index of value xij
-      // -> here 0 and 1 so values are there own index and are found at
+      // -> here 0 and 1 so values are their own index and are found at
       // example[i], k is the index of the class yk and is found at
       // classPosition
-      nijk[i][example[i]][example[classPosition]] += 1;
+      int j = example[i];
+      nijk[i][j][k] += 1;
     }
+  }
+
+  public boolean allTheSame() {
+    return (Math.abs(majorityClass) != accumulatedExamples);
+  }
+
+  public int majority() {
+    return (majorityClass < 0) ? 0 : 1;
   }
 
   /**
