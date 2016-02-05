@@ -88,7 +88,7 @@ public class VfdtNode{
   }
 
   private double epsilon(double delta) {
-    return Math.sqrt(Math.log(1/delta)/(2*(p+n)));
+    return Math.sqrt(Math.pow(Math.log(1),2) * Math.log(1/delta)/(2*(p+n)));
   }
 
   public void evaluateSplit(double delta, double tau, int nmin) {
