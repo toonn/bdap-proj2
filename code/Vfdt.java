@@ -68,7 +68,7 @@ public class Vfdt{
     */
   public double makePrediction(int[] example){
 
-    double prediction = root.sortExample(example).majority();
+    double prediction = root.sortExample(example).predict();
 
     return prediction;
   }
