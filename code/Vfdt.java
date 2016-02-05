@@ -15,6 +15,7 @@ public class Vfdt{
   private int examplesProcessed;
   private double delta;
   private double tau;
+  private int nmin;
 
   private VfdtNode root;
 
@@ -33,9 +34,8 @@ public class Vfdt{
     this.tau = tau;
     examplesProcessed = 0;
 
-    /*
-       FILL IN HERE
-       */
+    this.root = new VfdtNode(numFeatures, classPosition);
+    nmin = 5;
   }
 
   /**
@@ -46,11 +46,14 @@ public class Vfdt{
     @param examples is a set of examples 
     */
   public void update(int[][] examples){
-
-    /*
-       FILL IN HERE
-       */
-
+    for (int[] example : examples) {
+      examplesProcessed += 1;
+      VfdtNode l = root.sortExample(example);
+      l.incrementNijk(example);
+      if (! l.allTheSame()) {
+        l.evaluateSplit(delta, tau, nmin);
+      }
+    }
   }
 
 
