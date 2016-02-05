@@ -173,7 +173,7 @@ public class VfdtNode{
   }
 
   public boolean allTheSame() {
-    return (Math.abs(majorityClass) != accumulatedExamples);
+    return (Math.abs(majorityClass) == accumulatedExamples);
   }
 
   public int majority() {
