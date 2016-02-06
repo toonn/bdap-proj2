@@ -6,8 +6,8 @@ set xlabel "Number of training examples"
 set ylabel "Accuracy"
 set terminal epslatex
 
-set output "lc_lr.tex"
+set output "lc-lr.tex"
 plot "out.lr.acc" using 1:2 title "Logistic Regression" with linespoints
 
-set output "lc_vfdt.tex"
+set output "lc-vfdt.tex"
 plot "out.vfdt.acc" using 1:2 title "VFDT" with linespoints
