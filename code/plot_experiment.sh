@@ -12,7 +12,7 @@ make LogisticRegression.class
 for i in `seq 1 9`;
 do
   rm -f exp"$i".lr.acc
-  java LogisticRegression $(expr $i * 0.1) $TRAIN $TEST out 10
+  java LogisticRegression $(echo "($i * 0.1)" | bc) $TRAIN $TEST exp"$i" 10
 done
 
 # Generate VFDT data
@@ -21,7 +21,7 @@ make VfdtNode.class
 for i in `seq 1 9`;
 do
   rm -f exp"$i".vfdt.acc
-  java Vfdt $(expr $i * 0.1) 0.0001 $TRAIN $TEST out 10
+  java Vfdt $(echo "($i * 0.1)" | bc) 0.0001 $TRAIN $TEST exp"$i" 10
 done
 
-gnuplot exp.gnuplot
+gnuplot -p exp.gnuplot
