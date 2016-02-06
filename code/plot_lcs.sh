@@ -18,4 +18,4 @@ make VfdtNode.class
 rm -f out.vfdt.acc
 java Vfdt 0.01 0.0001 $TRAIN $TEST out 10
 
-
+gnuplot lcs.gnuplot
