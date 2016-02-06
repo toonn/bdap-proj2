@@ -35,7 +35,7 @@ public class Vfdt{
     examplesProcessed = 0;
 
     this.root = new VfdtNode(numFeatures, classPosition);
-    nmin = 10;
+    nmin = 100;
   }
 
   /**
