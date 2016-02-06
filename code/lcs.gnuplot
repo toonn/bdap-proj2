@@ -1,4 +1,5 @@
-set autoscale
+set logscale x
+set nologscale y
 set xtic auto
 set ytic auto
 set xlabel "Number of training examples"
